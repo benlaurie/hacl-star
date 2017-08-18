@@ -8,6 +8,7 @@ open FStar.UInt8
 open FStar.Endianness
 open Spec.Lib
 open Spec.Curve25519.Lemmas
+// BB: Are there some lemma calls or triggers in this file ? Else remove.
 
 #reset-options "--initial_fuel 0 --max_fuel 0 --z3rlimit 20"
 
@@ -21,8 +22,11 @@ let zero : elem = 0
 let one  : elem = 1
 let ( +@ ) = fadd
 let ( *@ ) = fmul
+// BB: Are the operator definitions used ? Else remove.
+// BB: Add a blank line
 (** Exponentiation *)
 let rec ( ** ) (e:elem) (n:pos) : Tot elem (decreases n) =
+// BB: Is this an operator or a comment ?
   if n = 1 then e
   else
     if n % 2 = 0 then op_Star_Star (e `fmul` e) (n / 2)
@@ -44,6 +48,7 @@ let add_and_double qx nq nqp1 =
   let x_1 = qx in
   let x_2, z_2 = nq.x, nq.z in 
   let x_3, z_3 = nqp1.x, nqp1.z in 
+// BB: End trailing whitespace
   let a  = x_2 `fadd` z_2 in
   let aa = a**2 in
   let b  = x_2 `fsub` z_2 in
@@ -89,7 +94,7 @@ let scalarmult (k:scalar) (u:serialized_point) : Tot serialized_point =
   let res = montgomery_ladder u k in
   encodePoint res
 
-
+// BB: Relocate test vectors for specification in its own file
 (* ********************* *)
 (* RFC 7748 Test Vectors *)
 (* ********************* *)
