@@ -18,13 +18,20 @@ open Hacl.Spec.Bignum.Modulo
 
 inline_for_extraction let two54m152 : x:limb{v x = 0x3fffffffffff68} =
   assert_norm (pow2 64 > 0x3fffffffffff68); uint64_to_limb 0x3fffffffffff68uL
+// BB: Prefix computationnally irrelevent parts with (**)
+// BB: Split line between computationnally relevant and not
+
 inline_for_extraction let two54m8 : x:limb{v x = 0x3ffffffffffff8} =
   assert_norm (pow2 64 > 0x3ffffffffffff8); uint64_to_limb 0x3ffffffffffff8uL
+// BB: Prefix computationnally irrelevent parts with (**)
+// BB: Split line between computationnally relevant and not
+
 inline_for_extraction let nineteen : x:limb{v x = 19} = assert_norm(19 < pow2 64); uint64_to_limb 19uL
 inline_for_extraction let mask_51 : x:limb{v x = pow2 51 - 1} =
   assert_norm (0x7ffffffffffff < pow2 64);
   assert_norm (0x7ffffffffffff = pow2 51 - 1);
   uint64_to_limb 0x7ffffffffffffuL
+// BB: Prefix computationnally irrelevent parts with (**)
 
 #set-options "--z3rlimit 20"
 
@@ -50,6 +57,7 @@ private let add_zero_ b =
   b.(2ul) <- b2 +^ two54m8;
   b.(3ul) <- b3 +^ two54m8;
   b.(4ul) <- b4 +^ two54m8
+// BB: Prefix computationnally irrelevent parts with (**)
 
 
 [@"substitute"]
@@ -65,6 +73,7 @@ let add_zero b =
   let h0 = ST.get() in
   add_zero_ b;
   lemma_add_zero_spec (as_seq h0 b)
+// BB: Prefix computationnally irrelevent parts with (**)
 
 
 val carry_top:
@@ -73,6 +82,7 @@ val carry_top:
   (requires (fun h -> live h b /\ carry_top_pre (as_seq h b)))
   (ensures (fun h0 _ h1 -> live h0 b /\ carry_top_pre (as_seq h0 b) /\ live h1 b /\ modifies_1 b h0 h1
     /\ as_seq h1 b == carry_top_spec (as_seq h0 b)))
+// BB: Reorder the preconditions to regroup memory safety and fonctionnal correctness
 let carry_top b =
   let b4 = b.(4ul) in
   let b0 = b.(0ul) in
@@ -83,6 +93,7 @@ let carry_top b =
   let b0' = b0 +^ (nineteen *^ (b4 >>^ climb_size)) in
   b.(4ul) <- b4';
   b.(0ul) <- b0'
+// BB: Prefix computationnally irrelevent parts with (**)
 
 
 [@"substitute"]
@@ -118,3 +129,4 @@ let carry_top_wide b =
   let b0' = b0 +^ (nineteen *^ (wide_to_limb (b4 >>^ climb_size))) in
   b.(4ul) <- b4';
   b.(0ul) <- b0'
+// BB: Prefix computationnally irrelevent parts with (**)

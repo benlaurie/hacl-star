@@ -83,6 +83,8 @@ let crypto_scalarmult__ mypublic scalar basepoint q =
   pop_frame();
   let h7 = ST.get() in
   (**) modifies_popped_1 mypublic h0 h1 h6 h7
+// BB: Make consistent prefixes for computationnally irrelevent parts
+// BB: Deprecate the use of `cut` in favor of `assert`
 
 
 val crypto_scalarmult_:
@@ -115,6 +117,7 @@ let crypto_scalarmult_ mypublic secret basepoint q =
   let scalar = format_secret secret in
   crypto_scalarmult__ mypublic scalar basepoint q;
   pop_frame()
+// BB: Prefix computationnally irrelevent parts with (**)
 
 
 val crypto_scalarmult:

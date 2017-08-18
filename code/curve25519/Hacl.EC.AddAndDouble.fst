@@ -30,13 +30,14 @@ let all_disjoint (ppx:felem) (ppz:felem) (ppqx:felem) (ppqz:felem)
   /\ disjoint pz pqx /\ disjoint pz pqz /\ disjoint pz qx
   /\ disjoint pqx pqz /\ disjoint pqx qx
   /\ disjoint pqz qx
+// BB: Align interior conjunctions of the predicate
 
 let same_frame (ppx:felem) (ppz:felem) (ppqx:felem) (ppqz:felem)
                (px:felem) (pz:felem) (pqx:felem) (pqz:felem) : GTot Type0 =
   frameOf ppx = frameOf ppz /\ frameOf ppx = frameOf ppqx /\ frameOf ppx = frameOf ppqz
   /\ frameOf ppx = frameOf px /\ frameOf ppx = frameOf pz /\ frameOf ppx = frameOf pqx
   /\ frameOf pqx = frameOf pqz
-
+// BB: Align interior conjunctions of the predicate
 
 [@"substitute"]
 inline_for_extraction let red_513 s = Hacl.Spec.EC.AddAndDouble.red_513 s
@@ -50,12 +51,12 @@ private val lemma_modifies_composition: s1:Set.set HyperHeap.rid -> r2:HyperHeap
   (requires (modifies s1 h0 h1 /\ modifies (Set.singleton r2) h1 h2))
   (ensures (modifies (Set.union s1 (Set.singleton r2)) h0 h2))
 private let lemma_modifies_composition s1 r2 h0 h1 h2 = ()
-
+// BB: Relocate lemmas
 
 private val lemma_set_union: s:Set.set HyperHeap.rid -> r:HyperHeap.rid{Set.mem r s} -> Lemma
   (Set.union s (Set.singleton r) == s)
 private let lemma_set_union s r = Set.lemma_equal_intro s (Set.union s (Set.singleton r))
-
+// BB: Relocate lemmas
 
 private val lemma_fmonty__1_modifies:
   tmp:buffer limb{length tmp = 40} ->
@@ -109,7 +110,7 @@ private let lemma_fmonty__1_modifies tmp ppx ppz ppqx ppqz px pz pqx pqz qx h0 h
   lemma_modifies_composition s (frameOf ppx) h0 h5 h6;
   lemma_modifies_composition s (frameOf tmp) h0 h6 h7;
   lemma_modifies_composition s (frameOf tmp) h0 h7 h8
-
+// BB: Relocate lemmas
 
 private val lemma_fmonty__2_modifies:
   tmp:buffer limb{length tmp = 40} ->
@@ -168,7 +169,7 @@ private let lemma_fmonty__2_modifies tmp ppx ppz x3 z3 px pz pqx pqz qx h8 h9 h1
   lemma_modifies_composition s (frameOf ppx) h8 h13 h14;
   lemma_modifies_composition s (frameOf tmp) h8 h14 h15;
   lemma_modifies_composition s (frameOf tmp) h8 h15 h16
-
+// BB: Relocate lemmas
 
 private val lemma_fmonty__3_modifies:
   tmp:buffer limb{length tmp = 40} ->
@@ -213,7 +214,7 @@ private let lemma_fmonty__3_modifies tmp x2 z2 x3 z3 px pz pqx pqz qx h16 h17 h1
   lemma_modifies_composition s' (frameOf ppx) h16 h20 h21;
   cut (modifies (Set.union s' (Set.singleton (frameOf ppx))) h16 h21);
   Set.lemma_equal_intro s s'
-
+// BB: Relocate lemmas
 
 [@"substitute"]
 private val fmonty__1:
@@ -221,6 +222,7 @@ private val fmonty__1:
   ppx:felem -> ppz:felem -> ppqx:felem -> ppqz:felem ->
   px:felem -> pz:felem -> pqx:felem -> pqz:felem ->
   qx:felem -> Stack unit
+// BB: Choose a convention for successive elements of the same type
     (requires (fun h ->
       live h ppx /\ live h ppz /\ live h ppqx /\ live h ppqz
       /\ live h px /\ live h pz /\ live h pqx /\ live h pqz
@@ -288,6 +290,7 @@ private let fmonty__1 buf x2 z2 x3 z3 x z xprime zprime qx =
   let h8 = ST.get() in
   lemma_fmonty__1_modifies buf x2 z2 x3 z3 x z xprime zprime qx h0 h1 h2 h3 h4 h5 h6 h7 h8;
   ()
+// BB: Prefix computationnally irrelevent parts with (**)
 
 
 [@"substitute"]
@@ -398,6 +401,7 @@ private let fmonty__2 buf x2 z2 x3 z3 x z xprime zprime qx =
   let h16 = ST.get() in
   lemma_fmonty__2_modifies buf x2 z2 x3 z3 x z xprime zprime qx h8 h9 h10 h11 h12 h13 h14 h15 h16;
   ()
+// BB: Prefix computationnally irrelevent parts with (**)
 
 
 #reset-options "--initial_fuel 0 --max_fuel 0 --z3rlimit 100"
@@ -484,6 +488,7 @@ private let fmonty__3 buf x2 z2 x3 z3 x z xprime zprime qx =
   let h21 = ST.get() in
   lemma_fmonty__3_modifies buf x2 z2 x3 z3 x z xprime zprime qx h16 h17 h18 h19 h20 h21;
   ()
+// BB: Prefix computationnally irrelevent parts with (**)
 
 
 
@@ -539,6 +544,7 @@ private let fmonty__ buf x2 z2 x3 z3 x z xprime zprime qx =
   let h3 = ST.get() in
   lemma_fmonty_split (as_seq h0 x) (as_seq h0 z) (as_seq h0 xprime) (as_seq h0 zprime) (as_seq h0 qx);
   ()
+// BB: Prefix computationnally irrelevent parts with (**)
 
 
 #reset-options "--initial_fuel 0 --max_fuel 0 --z3rlimit 10"
@@ -621,3 +627,6 @@ let fmonty pp ppq p pq qmqp =
       /\ red_513 (as_seq hfin (getx ppq)) /\ red_513 (as_seq hfin (getz ppq)) );
   cut ( (as_seq hfin (getx pp), as_seq hfin (getz pp), as_seq hfin (getx ppq), as_seq hfin (getz ppq)) ==
           fmonty_tot (as_seq hinit (getx p)) (as_seq hinit (getz p)) (as_seq hinit (getx pq)) (as_seq hinit (getz pq)) (as_seq hinit (getx qmqp)) )
+// BB: Prefix computationnally irrelevent parts with (**)
+// BB: Deprecate the use of `cut` in favor of `assert`
+// BB: Use the assign notation for reveal_bytes

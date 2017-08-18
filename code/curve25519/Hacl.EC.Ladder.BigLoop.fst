@@ -1,9 +1,9 @@
 module Hacl.EC.Ladder.BigLoop
 
 module ST = FStar.HyperStack.ST
-
+// BB: Remove if unused
 open FStar.HyperStack.All
-
+// BB: Remove blank lines
 
 open FStar.Mul
 open FStar.HyperStack

@@ -1,6 +1,7 @@
 module Curve25519
 
 module ST = FStar.HyperStack.ST
+// BB: Remove if unused
 
 open FStar.HyperStack.All
 

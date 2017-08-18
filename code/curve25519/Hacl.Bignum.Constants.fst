@@ -1,6 +1,7 @@
 module Hacl.Bignum.Constants
 
 module ST = FStar.HyperStack.ST
+// BB: Remove.
 
 open FStar.HyperStack.All
 

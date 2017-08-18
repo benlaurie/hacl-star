@@ -43,10 +43,11 @@ val lemma_cmult__modifies: buf:buffer limb -> result:point -> h00:mem -> h0:mem 
 let lemma_cmult__modifies buf result h00 h0 h1 h2 =
   lemma_reveal_modifies_1 result h1 h2;
   lemma_reveal_modifies_1 buf h00 h0
+// BB: Relocate lemmas to a XXX.Lemmas.fst file
 
 
 type uint8_p = Buffer.buffer H8.t
-
+// BB: This is probably a redefinition
 
 private val lemma_seq_: #a:Type -> s:Seq.seq a -> n:nat -> l:nat{n + l <= Seq.length s} -> n':nat -> l':nat{n' >= n /\ n' + l' <= n + l} ->
   Lemma
@@ -54,6 +55,7 @@ private val lemma_seq_: #a:Type -> s:Seq.seq a -> n:nat -> l:nat{n + l <= Seq.le
   (ensures (Seq.slice s n' (n'+l') == Seq.slice (Seq.slice s n (n+l)) (n'-n) (n'-n+l')))
 private let lemma_seq_ #a s n l n' l' =
   Seq.lemma_eq_intro (Seq.slice s n' (n'+l')) (Seq.slice (Seq.slice s n (n+l)) (n'-n) (n'-n+l'))
+// BB: Relocate lemmas to a XXX.Lemmas.fst file
 
 
 private val lemma_seq_': s:Seq.seq limb -> n:nat -> l:nat{n + l <= Seq.length s} -> n':nat -> l':nat{n' >= n /\ n' + l' <= n + l} ->
@@ -66,6 +68,8 @@ private let lemma_seq_' s n l n' l' =
   cut (Seq.slice s n' (n'+l') == Seq.slice zeros (n'-n) (n'-n+l'));
   Seq.lemma_eq_intro (Seq.create l' limb_zero) (Seq.slice zeros (n'-n) (n'-n+l'));
   cut (Seq.slice s n' (n'+l') == Seq.create l' limb_zero)
+// BB: Relocate lemmas to a XXX.Lemmas.fst file
+// BB: Deprecate the use of `cut` in favor of `assert`
 
 
 private val lemma_seq': h:mem -> b:buffer limb{Buffer.live h b /\ length b = 40} -> Lemma
@@ -82,11 +86,13 @@ private let lemma_seq' h b =
   lemma_seq_' s i 40 i 10;
   lemma_seq_' s i 10 i 5;
   lemma_seq_' s i 10 (i+5) 5
+// BB: Relocate lemmas to a XXX.Lemmas.fst file
 
 
 private val lemma_seq'': h:mem -> b:felem{Buffer.live h b /\ red_513 (as_seq h b)} -> Lemma
   (red_513 (Seq.upd (as_seq h b) 0 limb_one))
 private let lemma_seq'' h b = ()
+// BB: Relocate lemmas to a XXX.Lemmas.fst file
 
 
 private val lemma_point_inf: s:seqelem -> s':seqelem -> Lemma
@@ -105,6 +111,8 @@ private let lemma_point_inf s s' =
   Seq.lemma_eq_intro z (Seq.create 5 limb_zero);
   cut (fst inf == Seq.upd (Seq.create 5 limb_zero) 0 limb_one);
   cut (snd inf == Seq.create 5 limb_zero)
+// BB: Relocate lemmas to a XXX.Lemmas.fst file
+// BB: Deprecate the use of `cut` in favor of `assert`
 
 #reset-options "--initial_fuel 0 --max_fuel 0 --z3rlimit 400"
 
@@ -160,6 +168,9 @@ private let cmult_ result point_buf n q =
   copy result nq;
   let h'' = ST.get() in
   lemma_cmult__modifies point_buf result h0 h h' h''
+// BB: Relocate lemmas to a XXX.Lemmas.fst file
+// BB: Prefix computationnally irrelevent parts with (**)
+// BB: Deprecate the use of `cut` in favor of `assert`
 
 
 #reset-options "--initial_fuel 0 --max_fuel 0 --z3rlimit 400"
@@ -195,3 +206,5 @@ let cmult result n q =
   pop_frame();
   let h4 = ST.get() in
   lemma_intro_modifies_1 result h0 h4
+// BB: Prefix computationnally irrelevent parts with (**)
+// BB: Deprecate the use of `cut` in favor of `assert`

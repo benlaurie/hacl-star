@@ -109,6 +109,9 @@ private let rec swap_conditional_ a b swap ctr =
     let i = U32.(ctr -^ 1ul) in
     swap_conditional_ a b swap i
   )
+// BB: Prefix computationnally irrelevent parts with (**)
+// BB: Deprecate the use of `cut` in favor of `assert`
+
 
 #reset-options "--initial_fuel 0 --max_fuel 0 --z3rlimit 100"
 
@@ -146,6 +149,7 @@ let swap_conditional a b iswap =
   assert_norm((0 - 0) % pow2 64 = 0);
   swap_conditional_ (getx a) (getx b) swap clen;
   swap_conditional_ (getz a) (getz b) swap clen
+// BB: Prefix computationnally irrelevent parts with (**)
 
 
 #reset-options "--initial_fuel 0 --max_fuel 0 --z3rlimit 30"

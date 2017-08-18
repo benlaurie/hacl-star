@@ -3,7 +3,7 @@ module Hacl.Bignum.Fsquare
 module ST = FStar.HyperStack.ST
 
 open FStar.HyperStack.All
-
+// BB: Remove blank lines
 
 open FStar.HyperStack
 open FStar.Buffer
@@ -35,7 +35,7 @@ private let upd_5 tmp s0 s1 s2 s3 s4 =
   tmp.(4ul) <- s4;
   let h1 = ST.get() in
   Seq.lemma_eq_intro (as_seq h1 tmp) (seq_upd_5 s0 s1 s2 s3 s4)
-
+// BB: Prefix computationnally irrelevent parts with (**)
 
 #set-options "--z3rlimit 50 --initial_fuel 0 --max_fuel 0"
 
@@ -70,7 +70,7 @@ private let fsquare__ tmp output =
   upd_5 tmp s0 s1 s2 s3 s4;
   let h1 = ST.get() in
   Seq.lemma_eq_intro (as_seq h1 tmp) (fsquare_spec_ (as_seq h0 output))
-
+// BB: Prefix computationnally irrelevent parts with (**)
 
 #reset-options "--z3rlimit 100 --max_fuel 0"
 
@@ -93,7 +93,7 @@ let fsquare_ tmp output =
   carry_top_wide tmp;
   copy_from_wide_ output tmp;
   carry_0_to_1 output
-
+// BB: Prefix computationnally irrelevent parts with (**)
 
 #set-options "--z3rlimit 100 --initial_fuel 1 --max_fuel 1"
 
@@ -126,7 +126,8 @@ private let rec fsquare_times_ output tmp count =
     cut (modifies_2 tmp output h0 h1);
     fsquare_times_ output tmp i
   )
-
+// BB: Prefix computationnally irrelevent parts with (**)
+// BB: Deprecate the use of `cut` in favor of `assert`
 
 #set-options "--z3rlimit 10 --initial_fuel 0 --max_fuel 0"
 
@@ -152,6 +153,7 @@ let fsquare_times output input count =
   Hacl.Spec.Bignum.Fmul.lemma_whole_slice (as_seq h1 output);
   fsquare_times_ output t count;
   pop_frame()
+// BB: Prefix computationnally irrelevent parts with (**)
 
 
 [@"c_inline"]
@@ -172,3 +174,4 @@ let fsquare_times_inplace output count =
   Hacl.Spec.Bignum.Fmul.lemma_whole_slice (as_seq h1 output);
   fsquare_times_ output t count;
   pop_frame()
+// BB: Prefix computationnally irrelevent parts with (**)

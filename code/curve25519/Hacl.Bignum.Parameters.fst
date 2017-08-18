@@ -40,6 +40,7 @@ inline_for_extraction let climb_size = assert_norm(pow2 32 > 51); 51ul
 
 val lemma_prime_limb_size: unit -> Lemma (pow2 (len * limb_size) > prime)
 let lemma_prime_limb_size () = assert_norm (pow2 (5 * 51) > pow2 255 - 19)
+// BB: Relocate lemma
 
 open Hacl.UInt64
 
@@ -53,6 +54,7 @@ val lemma_limb_injectivity: a:limb -> b:limb -> Lemma
   (ensures (v a = v b ==> a == b))
   [SMTPat (v a); SMTPat (v b)]
 let lemma_limb_injectivity a b = ()
+// BB: Relocate lemma
 
 inline_for_extraction val limb_zero: x:limb{v x = 0}
 inline_for_extraction val limb_one: x:limb{v x = 1}
@@ -131,6 +133,8 @@ val lemma_wide_injectivity: a:wide -> b:wide -> Lemma
   (ensures (w a = w b ==> a == b))
   [SMTPat (w a); SMTPat (w b)]
 let lemma_wide_injectivity a b = FStar.Classical.move_requires (FStar.UInt128.v_inj a) b
+// BB: Relocate lemma
+
 
 inline_for_extraction val wide_zero: x:wide{w x = 0}
 inline_for_extraction val wide_one: x:wide{w x = 1}

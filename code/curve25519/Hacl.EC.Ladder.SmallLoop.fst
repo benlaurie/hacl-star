@@ -26,6 +26,7 @@ module H8 = Hacl.UInt8
 
 
 type uint8_p = buffer H8.t
+// BB: Redefinition ?
 
 private inline_for_extraction val last_bit: byt:H8.t -> Tot (b:limb{v b = 0 \/ v b = 1})
 private inline_for_extraction let last_bit byt =
@@ -60,6 +61,8 @@ private let cmult_small_loop_step_1 nq nqpq nq2 nqpq2 q byt (* i *) =
   swap_conditional nq nqpq bit;
   let h1 = ST.get() in
   lemma_reveal_modifies_2 nq nqpq h0 h1
+// BB: Prefix computationnally irrelevent parts with (**)
+// BB: Deprecate the use of `cut` in favor of `assert`
 
 
 private val cmult_small_loop_step_2:
@@ -108,7 +111,7 @@ private let cmult_small_loop_step nq nqpq nq2 nqpq2 q byt (* i *) =
   cmult_small_loop_step_1 nq nqpq nq2 nqpq2 q byt (* i *);
   cmult_small_loop_step_2 nq nqpq nq2 nqpq2 q byt (* i *);
   cmult_small_loop_step_1 nq2 nqpq2 nq nqpq q byt (* i *)
-
+// BB: Are those (* i *) comments ? Remove if unnecessary
 
 private val cmult_small_loop_double_step:
   nq:point ->
@@ -149,7 +152,7 @@ val cmult_small_loop_def_0:
 let cmult_small_loop_def_0 nq nqpq q byte = ()
 
 #reset-options "--initial_fuel 0 --max_fuel 0 --z3rlimit 100"
-
+// BB: Line spaces
 val cmult_small_loop_def_1:
   nq:spoint_513 ->
   nqpq:spoint_513 ->
@@ -202,3 +205,5 @@ let rec cmult_small_loop nq nqpq nq2 nqpq2 q byt i =
     let byt' = H8.(byt <<^ 2ul) in
     cmult_small_loop nq nqpq nq2 nqpq2 q byt' i'
   )
+// BB: Prefix computationnally irrelevent parts with (**)
+// BB: Deprecate the use of `cut` in favor of `assert`

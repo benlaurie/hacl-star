@@ -20,7 +20,7 @@ open Hacl.EC.Point
 #reset-options "--initial_fuel 0 --max_fuel 0 --z3rlimit 5"
 
 type uint8_p = buffer Hacl.UInt8.t
-
+// BB: Find a place to define this outside the curve25519 directory
 private inline_for_extraction let zero_8 = uint8_to_sint8 0uy
 
 
@@ -59,6 +59,8 @@ let point_inf () =
   cut (v (get h x 4) = 0);
   let p = make x y z in
   p
+// BB: Prefix computationnally irrelevent parts with (**)
+// BB: Deprecate the use of `cut` in favor of `assert`
 
 
 open Hacl.Endianness
@@ -90,6 +92,8 @@ private let upd_5 output output0 output1 output2 output3 output4 =
       /\ get h1 output 3 == output3
       /\ get h1 output 4 == output4 );
   Seq.lemma_eq_intro (as_seq h1 output) (Hacl.Spec.EC.Format.seq_upd_5 output0 output1 output2 output3 output4)
+// BB: Prefix computationnally irrelevent parts with (**)
+// BB: Deprecate the use of `cut` in favor of `assert`
 
 
 private val upd_5': output:felem ->
@@ -112,6 +116,8 @@ private let upd_5' output output0 output1 output2 output3 output4 =
       /\ get h1 output 3 == output3
       /\ get h1 output 4 == output4 );
   Seq.lemma_eq_intro (as_seq h1 output) (Hacl.Spec.EC.Format.seq_upd_5 output0 output1 output2 output3 output4)
+// BB: Prefix computationnally irrelevent parts with (**)
+// BB: Deprecate the use of `cut` in favor of `assert`
 
 
 #reset-options "--initial_fuel 0 --max_fuel 0 --z3rlimit 400"
@@ -147,6 +153,8 @@ let fexpand output input =
   UInt.logand_mask (v (i3 >>^ 1ul )) (51);
   UInt.logand_mask (v (i4 >>^ 12ul)) (51);
   upd_5 output output0 output1 output2 output3 output4
+// BB: Prefix computationnally irrelevent parts with (**)
+// BB: Deprecate the use of `cut` in favor of `assert`
 
 
 open Hacl.Spec.Endianness
@@ -198,6 +206,8 @@ private let store_4 output v0 v1 v2 v3 =
   Seq.lemma_eq_intro (as_seq h4 output) 
                      FStar.Seq.(hlittle_bytes 8ul (v v0) @| hlittle_bytes 8ul (v v1)
                          @| hlittle_bytes 8ul (v v2) @| hlittle_bytes 8ul (v v3))
+// BB: Prefix computationnally irrelevent parts with (**)
+// BB: Deprecate the use of `cut` in favor of `assert`
 
 
 private val fcontract_first_carry_pass:
@@ -233,6 +243,9 @@ private let fcontract_first_carry_pass input =
   (* UInt.logand_mask (v t3') 51; *)
   (* lemma_carry_local (v t3') (v t4) 153; *)
   upd_5' input t0' t1'' t2'' t3'' t4'
+// BB: Are the comments useful for documentation ? Else remove
+// BB: Prefix computationnally irrelevent parts with (**)
+// BB: Deprecate the use of `cut` in favor of `assert`
 
 
 private 
@@ -247,6 +260,7 @@ private let fcontract_first_carry_full input =
   fcontract_first_carry_pass input;
   assert_norm(19 * (pow2 64 / pow2 51) + pow2 51 < pow2 52);
   Hacl.Bignum.Modulo.carry_top input
+// BB: Prefix computationnally irrelevent parts with (**)
 
 
 private 
@@ -277,6 +291,7 @@ private let fcontract_second_carry_pass input =
   let t4' = t4 +^ (t3' >>^ 51ul) in
   let t3'' = t3' &^ Hacl.Spec.EC.Format.mask_51 in
   upd_5' input t0' t1'' t2'' t3'' t4'
+// BB: Prefix computationnally irrelevent parts with (**)
 
 
 private 
@@ -289,12 +304,14 @@ val fcontract_second_carry_full:
       Hacl.Spec.EC.AddAndDouble.bounds (as_seq h0 input) (pow2 52) p51 p51 p51 p51)
       /\ Buffer.live h1 input /\ modifies_1 input h0 h1
       /\ as_seq h1 input == Hacl.Spec.EC.Format.fcontract_second_carry_full (as_seq h0 input) ))
+// BB: Regroup the memory safety clauses together
 private let fcontract_second_carry_full input =
   fcontract_second_carry_pass input;
   let h = ST.get() in
   Hacl.Spec.Bignum.Modulo.lemma_carry_top_spec_ (as_seq h input);
   Hacl.Bignum.Modulo.carry_top input;
   Hacl.Bignum.Fproduct.carry_0_to_1 input
+// BB: Prefix computationnally irrelevent parts with (**)
 
 
 private 
@@ -333,6 +350,7 @@ private let fcontract_trim input =
   let a3' = a3 -^ (Hacl.Spec.EC.Format.p51m1 &^ mask) in
   let a4' = a4 -^ (Hacl.Spec.EC.Format.p51m1 &^ mask) in
   upd_5' input a0' a1' a2' a3' a4'
+// BB: Prefix computationnally irrelevent parts with (**)
 
 
 val reduce:
@@ -385,6 +403,7 @@ private let fcontract_store output input =
   (* UInt.logor_disjoint (v (t2 <<^ 38ul)) (v (t1 >>^ 13ul)) 38; *)
   (* UInt.logor_disjoint (v (t3 <<^ 25ul)) (v (t2 >>^ 26ul)) 25; *)
   (* UInt.logor_disjoint (v (t4 <<^ 12ul)) (v (t3 >>^ 39ul)) 12; *)
+// BB: Are the comment useful for documentation ? Else remove.
   
 
 private val fcontract: output:uint8_p{length output = 32} -> input:felem{disjoint output input} -> Stack unit
@@ -441,6 +460,8 @@ let point_of_scalar scalar =
   cut (get h z 3 == limb_zero);
   cut (get h z 4 == limb_zero);
   buf
+// BB: Prefix computationnally irrelevent parts with (**)
+// BB: Deprecate the use of `cut` in favor of `assert`
 
 
 val scalar_of_point: scalar:uint8_p{length scalar = keylen} -> p:point -> Stack unit
@@ -471,6 +492,7 @@ let scalar_of_point scalar point =
   Hacl.Bignum.fmul sc x zmone;
   fcontract scalar sc;
   pop_frame()
+// BB: Prefix computationnally irrelevent parts with (**)
 
 
 val format_secret:
@@ -504,3 +526,5 @@ let format_secret secret =
   e.(0ul) <- e0;
   e.(31ul) <- e31;
   e
+// BB: Prefix computationnally irrelevent parts with (**)
+// BB: Deprecate the use of `cut` in favor of `assert`

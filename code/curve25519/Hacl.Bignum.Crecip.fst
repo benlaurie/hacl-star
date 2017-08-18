@@ -46,12 +46,14 @@ private val fmul:
       ))
 [@"substitute"]
 private let fmul output a b =
+// BB: Is the private keyword required in the let ? Else remove.
   let h = ST.get() in
   lemma_513_is_53 (as_seq h a);
   lemma_513_is_55 (as_seq h b);
+// BB: Make clear that the previous code is computationnally irrelevant
+//     I personally add (**) in front of those parts
   fmul_53_55_is_fine (as_seq h a) (as_seq h b);
   fmul output a b
-
 
 #reset-options "--max_fuel 0 --z3rlimit 50"
 
@@ -71,6 +73,7 @@ private val fsquare_times:
 private let fsquare_times output input count =
   let h = ST.get() in
   lemma_513_is_5413 (as_seq h input);
+// BB: Prefix with (**)
   fsquare_times output input count
 
 
@@ -88,13 +91,14 @@ private val fsquare_times_inplace:
 private let fsquare_times_inplace output count =
   let h = ST.get() in
   lemma_513_is_5413 (as_seq h output);
+// BB: Prefix with (**)
   fsquare_times_inplace output count
 
 
 private val lemma_crecip_1_modifies': h0:mem -> h1:mem -> b:buffer limb -> Lemma (requires (equal_domains h0 h1 /\ live h0 b /\ modifies_1 b h0 h1))
   (ensures (live h1 b))
 private let lemma_crecip_1_modifies' h0 h1 b = lemma_reveal_modifies_1  b h0 h1
- 
+// BB: Relocate in a XXX.Lemma.fst file
 
 private val lemma_crecip_1_modifies'': h0:mem -> h1:mem -> h2:mem -> h3:mem -> h4:mem -> h5:mem -> h6:mem -> h7:mem -> buf:buffer limb{length buf = 20} ->
   Lemma (requires (
@@ -106,7 +110,7 @@ private val lemma_crecip_1_modifies'': h0:mem -> h1:mem -> h2:mem -> h3:mem -> h
     /\ modifies_1 t0 h4 h5 /\ modifies_1 b h5 h6 /\ modifies_1 t0 h6 h7 /\ equal_domains h0 h7))
         (ensures (modifies_1 buf h0 h7))
 private let lemma_crecip_1_modifies'' h0 h1 h2 h3 h4 h5 h6 h7 buf = ()
-
+// BB: Relocate in a XXX.Lemma.fst file
 private val lemma_crecip_1_modifies: h0:mem -> h1:mem -> h2:mem -> h3:mem -> h4:mem -> h5:mem -> h6:mem -> h7:mem -> buf:buffer limb{length buf = 20} ->
   Lemma (requires (
     let a  = Buffer.sub buf 0ul  5ul in
@@ -119,7 +123,7 @@ private val lemma_crecip_1_modifies: h0:mem -> h1:mem -> h2:mem -> h3:mem -> h4:
 private let lemma_crecip_1_modifies h0 h1 h2 h3 h4 h5 h6 h7 buf =
   lemma_crecip_1_modifies'' h0 h1 h2 h3 h4 h5 h6 h7 buf;
   lemma_crecip_1_modifies' h0 h7 buf
-
+// BB: Relocate in a XXX.Lemma.fst file
 
 [@"substitute"]
 private val crecip_1:
@@ -182,7 +186,7 @@ private let crecip_1 buf z =
   no_upd_lemma_1 h5 h6 b  a;
   no_upd_lemma_1 h6 h7 t0 a;
   lemma_crecip_1_modifies h0 h1 h2 h3 h4 h5 h6 h7 buf
-
+// BB: make consistent the prefixing of computationnally irrelevent code with (**)
 
 private val lemma_crecip_2_modifies: h0:mem -> h1:mem -> h2:mem -> h3:mem -> h4:mem -> h5:mem -> h6:mem -> h7:mem -> h8:mem -> buf:buffer limb{length buf = 20} ->
   Lemma (requires (
@@ -196,7 +200,7 @@ private val lemma_crecip_2_modifies: h0:mem -> h1:mem -> h2:mem -> h3:mem -> h4:
 private let lemma_crecip_2_modifies h0 h1 h2 h3 h4 h5 h6 h7 h8 buf =
   cut (modifies_1 buf h0 h8);
   lemma_crecip_1_modifies' h0 h8 buf
-
+// BB: Relocate lemmas to a XXX.Lemmas.fst file
 
 [@"substitute"]
 private val crecip_2:
@@ -270,7 +274,8 @@ private let crecip_2 buf =
   cut (red_513 (as_seq h8 a));
   cut (red_513 (as_seq h8 t0));
   lemma_crecip_2_modifies h0 h1 h2 h3 h4 h5 h6 h7 h8 buf
-
+// BB: Prefix computationnally irrelevent parts
+// BB: Deprecate the use of cut in favor of assert
 
 private val lemma_crecip_3_modifies: h0:mem -> h1:mem -> h2:mem -> h3:mem -> h4:mem -> h5:mem -> h6:mem -> h7:mem -> buf:buffer limb{length buf = 20} -> out:felem{disjoint buf out} ->
   Lemma (requires (
@@ -294,7 +299,7 @@ private let lemma_crecip_3_modifies h0 h1 h2 h3 h4 h5 h6 h7 buf out =
   lemma_reveal_modifies_1 t0 h4 h5;
   lemma_reveal_modifies_1 t0 h5 h6;
   lemma_reveal_modifies_1 out h6 h7
-
+// BB: Relocate lemmas to a XXX.Lemmas.fst file
 
 [@"substitute"]
 private val crecip_3:
@@ -356,6 +361,7 @@ private let crecip_3 out buf =
   fmul out t0 a;
   let h7 = ST.get() in
   lemma_crecip_3_modifies h0 h1 h2 h3 h4 h5 h6 h7 buf out
+// BB: Prefix computationnally irrelevent parts
 
 
 [@"substitute"]
@@ -418,6 +424,7 @@ private let crecip_3' out buf =
   fmul out t0 a;
   let h7 = ST.get() in
   lemma_crecip_3_modifies h0 h1 h2 h3 h4 h5 h6 h7 buf out
+// BB: Prefix computationnally irrelevent parts
 
 
 [@"c_inline"]
@@ -503,3 +510,4 @@ let crecip' out z =
   pop_frame();
   (**) let hfin = ST.get() in
   (**) modifies_popped_1 out hinit h0 h5 hfin
+// BB: Make consistent prefixes for computationnally irrelevent parts
